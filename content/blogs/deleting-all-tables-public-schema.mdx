@@ -1,0 +1,28 @@
+---
+title: 'Postgres SQL Query: Deleting All tables in public schema'
+date: '2026-07-17'
+description: 'How to delete all tables in public schema in Postgres SQL using a single query.'
+readTime: '2 min read'
+tags: ['Postgres SQL', 'SQL', 'PostgreSQL']
+---
+
+# Introduction
+
+One of the most common tasks in Postgres SQL is to delete all tables in a specific schema. Here is a simple and efficient way to do it.
+
+## The Query
+
+```sql
+DO $$
+DECLARE
+    r RECORD;
+BEGIN
+    FOR r IN
+        SELECT tablename
+        FROM pg_tables
+        WHERE schemaname = 'public'
+    LOOP
+        EXECUTE format('DROP TABLE IF EXISTS public.%I CASCADE', r.tablename);
+    END LOOP;
+END $$;
+```
